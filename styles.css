@@ -7,6 +7,7 @@ body, html {
 #navbar {
   position: fixed;
   top: 0;
+  bottom:0;
   left: 10%;
   display: flex;
   flex-direction: column;
@@ -19,25 +20,17 @@ body, html {
   width: 20px;
   height: 20px; 
   border-radius: 50%;
-  background-color: transparent;
+  background-color: white;
   border: 2px solid #002930; /* Solid border */
   position: relative; /* For positioning the line */
 }
 
-.dot::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 2px; /* Line width */
-  background-color: #002930; /* Line color */
-  transform: translateX(-50%); /* Center line */
-}
+
 
 /* Vertical line */
 .vertical-hr {
-  margin-top: -10px; /* Adjust position */
+  margin-top:0; /* Adjust position */
+  margin-bottom:0;
   width: 1px;
   height: 100vh;
   position: absolute;
