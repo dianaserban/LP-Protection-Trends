@@ -1,0 +1,57 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+#navbar {
+  position: fixed;
+  top: 0;
+  left: 10%;
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Occupy full height of viewport */
+  z-index: 999;
+  justify-content: space-around;
+}
+
+.dot {
+  width: 20px;
+  height: 20px; 
+  border-radius: 50%;
+  background-color: transparent;
+  border: 2px solid #002930; /* Solid border */
+  position: relative; /* For positioning the line */
+}
+
+.dot::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px; /* Line width */
+  background-color: #002930; /* Line color */
+  transform: translateX(-50%); /* Center line */
+}
+
+/* Vertical line */
+.vertical-hr {
+  margin-top: -10px; /* Adjust position */
+  width: 1px;
+  height: 100vh;
+  position: absolute;
+  right: 10px; /* Adjust position */
+  background-color: #002930; /* Line color */
+}
+
+.active {
+  background-color: #002930; /* Change color when active */
+}
+
+.section {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
