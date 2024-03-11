@@ -11,7 +11,7 @@ body, html {
   left: 10%;
   display: flex;
   flex-direction: column;
-  height: 100%; /* Occupy full height of viewport */
+  height: 100%; 
   z-index: 999;
   justify-content: space-around;
 }
