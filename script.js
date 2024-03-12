@@ -1,91 +1,79 @@
 document.addEventListener('DOMContentLoaded', function () {
   const sections = document.querySelectorAll('.section');
   const navbar = document.getElementById('navbar');
+  const colors = ['#00b336', '#00b492', '#f7941d', '#7dcd13'];
+  let currentSectionIndex = 0;
+  let isScrolling = false;
+  let delayTimer;
+
+  // Function to set active dot and its color
+  function setActiveDot(index) {
+      dots.forEach(dot => dot.classList.remove('active'));
+      dots[index].classList.add('active');
+      dots.forEach((dot, i) => {
+          if (i === index) {
+              dot.style.backgroundColor = colors[i];
+          } else {
+              dot.style.backgroundColor = '';
+          }
+      });
+  }
 
   // Create navigation dots for each section
+  const dots = [];
   for (let i = 0; i < sections.length; i++) {
-    const dot = document.createElement('div');
-    dot.classList.add('dot');
-    dot.setAttribute('data-index', i);
-    navbar.appendChild(dot);
+      const dot = document.createElement('div');
+      dot.classList.add('dot');
+      dot.setAttribute('data-index', i);
+      navbar.appendChild(dot);
+      dots.push(dot);
   }
-
-  const dots = document.querySelectorAll('.dot');
-  const colors = ['#00b336', '#00b492', '#f7941d', '#7dcd13']; // Define colors for active dots
-
-  // Function to scroll to a specific section
-  function scrollToSection(index) {
-    const section = sections[index];
-    const sectionTop = section.offsetTop;
-    const sectionHeight = section.clientHeight;
-    const windowHeight = window.innerHeight;
-    const offset = (windowHeight - sectionHeight) / 2; // Offset to center the section
-    const scrollTo = sectionTop - offset;
-    
-    // Animate the scroll
-    window.scrollTo({
-      top: scrollTo,
-      behavior: 'auto'
-    });
-  }
-
-  // Handle wheel event to scroll to next/previous section
-  let scrolling = false;
-  window.addEventListener('wheel', (e) => {
-    if (scrolling) return;
-    scrolling = true;
-    const currentScrollTop = window.scrollY;
-    const viewportHeight = window.innerHeight;
-    let index = -1;
-
-    // Find the index of the section closest to the center of the viewport
-    sections.forEach((section, i) => {
-      const sectionTop = section.offsetTop;
-      const sectionHeight = section.clientHeight;
-      const distance = Math.abs(currentScrollTop + (viewportHeight / 2) - (sectionTop + sectionHeight / 2));
-      if (index === -1 || distance < Math.abs(currentScrollTop + (viewportHeight / 2) - (sections[index].offsetTop + sections[index].clientHeight / 2))) {
-        index = i;
-      }
-    });
-
-    // Scroll to the next/previous section
-    if (e.deltaY > 0) {
-      // Scrolling down
-      scrollToSection(index < sections.length - 1 ? index + 1 : index);
-    } else {
-      // Scrolling up
-      scrollToSection(index > 0 ? index - 1 : index);
-    }
-
-    setTimeout(() => { scrolling = false; }, 800); // Reset scrolling flag after 800ms
-  });
 
   // Handle dot click to navigate to the corresponding section
   dots.forEach((dot, index) => {
-    dot.addEventListener('click', () => {
-      scrollToSection(index);
-    });
+      dot.addEventListener('click', () => {
+          if (!isScrolling && index !== currentSectionIndex) {
+              scrollToSection(index);
+          }
+      });
   });
 
-  // Highlight current section in navigation on scroll
-  window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach((section, index) => {
-      const sectionTop = section.offsetTop;
-      const sectionHeight = section.clientHeight;
-      if (window.scrollY >= sectionTop - sectionHeight / 3) {
-        current = index;
-      }
-    });
+  // Function to scroll to a specific section
+  function scrollToSection(index) {
+      const section = sections[index];
+      isScrolling = true;
+      section.scrollIntoView({ behavior: 'smooth' });
+      currentSectionIndex = index;
+      setActiveDot(index);
+      clearTimeout(delayTimer);
+      delayTimer = setTimeout(() => {
+          isScrolling = false;
+      }, 2000); // Adjust the delay time as needed
+  }
 
-    dots.forEach((dot, index) => {
-      dot.style.backgroundColor = ''; // Reset dot color
-      if (index === current) {
-        dot.classList.add('active');
-        dot.style.backgroundColor = colors[index]; // Set color for active dot
-      } else {
-        dot.classList.remove('active');
+  // Handle wheel event to scroll to next/previous section
+  window.addEventListener('wheel', (e) => {
+      e.preventDefault(); // Prevent default scroll behavior
+      if (!isScrolling) {
+          const direction = e.deltaY > 0 ? 1 : -1;
+          const nextSectionIndex = currentSectionIndex + direction;
+          if (nextSectionIndex >= 0 && nextSectionIndex < sections.length) {
+              scrollToSection(nextSectionIndex);
+          }
       }
-    });
   });
+
+  // Handle keyboard arrow keys for navigation
+  window.addEventListener('keydown', (e) => {
+      if (!isScrolling) {
+          if (e.key === 'ArrowDown' && currentSectionIndex < sections.length - 1) {
+              scrollToSection(currentSectionIndex + 1);
+          } else if (e.key === 'ArrowUp' && currentSectionIndex > 0) {
+              scrollToSection(currentSectionIndex - 1);
+          }
+      }
+  });
+
+  // Set initial active dot
+  setActiveDot(currentSectionIndex);
 });
